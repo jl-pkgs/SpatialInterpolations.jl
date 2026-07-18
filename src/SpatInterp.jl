@@ -7,7 +7,7 @@ using Base.Threads
 using ProgressMeter
 using DocStringExtensions
 
-using SpatRasters: SpatRaster, rast,
+using SpatialRasterLite: SpatRaster, rast,
   st_coords, st_dims, meshgrid,
   bbox, st_bbox, make_rast, 
   Point, Point3, st_points

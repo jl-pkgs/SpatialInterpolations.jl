@@ -1,6 +1,6 @@
 using SpatInterp, Statistics, Test
 using RTableTools
-using SpatRasters: st_points, st_extract
+using SpatialRasterLite: st_points, st_extract
 
 
 @testset "interp" begin

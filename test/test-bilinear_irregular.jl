@@ -1,5 +1,5 @@
 using SpatInterp, Test
-using SpatRasters: Point
+using SpatialRasterLite: Point
 
 @testset "angle2quad" begin
   @test angle2quad(45) == 2

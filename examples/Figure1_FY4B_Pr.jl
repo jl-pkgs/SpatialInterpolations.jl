@@ -1,6 +1,6 @@
 using NetCDFTools: nc_read, st_dims
 using SpatInterp, JLD2
-using SpatRasters: SpatRaster, bbox, make_rast, bbox2dims, rast
+using SpatialRasterLite: SpatRaster, bbox, make_rast, bbox2dims, rast
 using GLMakie, MakieLayers, Shapefile
 using Shapefile: Table
 

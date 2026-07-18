@@ -1,4 +1,4 @@
-using SpatRasters: SpatRaster, st_dims
+using SpatialRasterLite: SpatRaster, st_dims
 using MakieLayers
 using GLMakie
 # using CairoMakie

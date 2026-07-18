@@ -1,4 +1,4 @@
-using SpatRasters: st_coords, st_bbox, rast
+using SpatialRasterLite: st_coords, st_bbox, rast
 using SpatInterp, Test
 
 
