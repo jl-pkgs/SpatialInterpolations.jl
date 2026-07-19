@@ -26,13 +26,18 @@ function weight_adw!(neighbor::Neighbor{FT,N};
   weight .= FT(0.0)
   nlon, nlat = dims[1:2]
   ∅ = FT(0)
-  wks = [zeros(nmax) for _ in 1:Threads.nthreads()]
-  αs = [zeros(nmax) for _ in 1:Threads.nthreads()]
+  # `threadid()` is global across the interactive and default pools.  The
+  # `@threads` loop only uses the default pool, so no buffers are needed for
+  # GC threads included by `maxthreadid()`.
+  nthread = Threads.nthreads(:interactive) + Threads.nthreads(:default)
+  wks = [zeros(FT, nmax) for _ in 1:nthread]
+  αs = [zeros(FT, nmax) for _ in 1:nthread]
 
-  @inbounds @threads for j in 1:nlat
+  @inbounds @threads :static for j in 1:nlat
+    tid = Threads.threadid()
+    wk = wks[tid]
+    α = αs[tid]
     for i in 1:nlon
-      wk = wks[Threads.threadid()]
-      α = αs[Threads.threadid()]
       @. wk = ∅
       @. α = ∅
       n = count[i, j]
