@@ -1,6 +1,8 @@
 using SpatialRasterLite, ArchGDAL, NetCDFTools
 using Ipaper, DataFrames, RTableTools, JLD2, NaNStatistics
 
+# !时区为北京时区，CSV误标成了UTC
+
 # # xlim = c(109.4, 111.6), ylim = c(31.2, 33.4)
 # b = bbox(109.4, 31.4, 111.6, 33.4)
 b = bbox(109.4, 31.2, 111.6, 33.4)
@@ -12,7 +14,6 @@ df = fread("./Project_十堰/data/十堰_prcp_sp237_mat_v20250824.csv")
 # 5.45%数据缺失
 dates = DateTime.(df.time, "yyyy-mm-ddTHH:MM:SSZ")
 data = Matrix(df[:, 2:end])' |> drop_missing |> collect
-
 # 无降水不插值
 _prcp = NaNStatistics.nansum(data, dims=1)[:]
 inds = findall(_prcp .>= 1.0) # 所有站点总降水大于1mm日期，才进行插值
