@@ -1,71 +1,65 @@
-using SpatInterp, Statistics, Test
+using ModelParams: GOF
+using Random: MersenneTwister, randperm
 using RTableTools
-using SpatialRasterLite: st_points, st_extract
+using SpatialRasterLite: st_extract
+using SpatInterp, Statistics, Test
 
-## 
-@testset "interp" begin
-  indir = "$(@__DIR__)/.." |> abspath
-  d = fread("$indir/data/prcp_st174_shiyan.csv")
+function interp_kfold(X, y, target; k=5, seed=42)
+  n = length(y)
+  @assert size(X, 1) == n
+  @assert 2 <= k <= n
 
-  X = [d.lon d.lat] # d.alt
-  Y = d.prcp
-  # Y = repeat(y, outer=(1, 24 * 30))
-  b = bbox(109.5, 31.5, 112 - 0.5, 33.5)
-  target = make_rast(; b, cellsize=0.01)
-  # neighbor = find_neighbor(target, X; radius=100, do_angle=true)
-
-  @time ra_idw = interp(X, Y, target; method="idw")
-  @time ra_adw = interp(X, Y, target; method="adw", cdd=25, nmax=10, do_angle=true)
-  @time ra_tps1 = interp_tps(X, Y, target; λ=0.01)
-  @time ra_tps2 = interp_tps(X, Y, target; λ=0.1)
-  # @profview ra_adw = interp(X, Y, target; wfun=weight_adw!)
-
-  ## extract values
+  order = randperm(MersenneTwister(seed), n)
+  folds = [order[i:k:end] for i in 1:k]
+  methods = (:idw, :adw, :tps)
+  pred = Dict(method => fill(NaN, n) for method in methods)
   points = st_points(X[:, 1], X[:, 2])
-  z_idw = st_extract(ra_idw, points).value[:]
-  z_adw = st_extract(ra_adw, points).value[:]
-  z_tps1 = st_extract(ra_tps1, points).value[:]
-  z_tps2 = st_extract(ra_tps2, points).value[:]
 
-  @test cor(z_idw, z_adw) >= 0.88
-  @test cor(z_idw, z_tps1) >= 0.88
-  @test cor(z_idw, z_tps2) >= 0.88
+  for test in folds
+    train = setdiff(eachindex(y), test)
+    X_train, y_train = X[train, :], y[train]
+
+    ra = interp(X_train, y_train, target;
+      method="idw", radius=200, nmax=10, m=2)
+    pred[:idw][test] = st_extract(ra, points[test]).value[:]
+
+    ra = interp(X_train, y_train, target;
+      method="adw", radius=200, nmax=10,
+      do_angle=true, cdd=25, m=2)
+    pred[:adw][test] = st_extract(ra, points[test]).value[:]
+
+    tps = solve_tps(X_train, y_train, 0.01)
+    pred[:tps][test] = predict(tps, X[test, :]; progress=false)[:]
+  end
+
+  Dict(method => GOF(y, pred[method]) for method in methods)
 end
 
+@testset "5-fold interpolation" begin
+  indir = joinpath(@__DIR__, "..")
+  d = fread(joinpath(indir, "data", "prcp_st174_shiyan.csv"))
+  X = [d.lon d.lat]
+  y = Float64.(d.prcp)
 
-## 
-@testset "interp" begin
-  indir = "$(@__DIR__)/.." |> abspath
-  d = fread("$indir/data/prcp_st174_shiyan.csv")
+  cellsize = 0.01
+  b = bbox(
+    minimum(X[:, 1]) - cellsize,
+    minimum(X[:, 2]) - cellsize,
+    maximum(X[:, 1]) + cellsize,
+    maximum(X[:, 2]) + cellsize,
+  )
+  target = make_rast(; b, cellsize)
+  scores = interp_kfold(X, y, target; k=5)
 
-  X = [d.lon d.lat] # d.alt
-  Y = d.prcp
-
-  b = bbox(109.4, 31.4, 111.6, 33.4)
-  target = make_rast(; b, cellsize=1 / 120 * 2)
-
-  ## 再加一个地理加权回归
-  # neighbor = find_neighbor(target, X; radius=100, do_angle=true)
-  radius = 30
-  nmax = 6
-  @time ra_idw = interp(X, Y, target; method="idw", radius, nmax, m=2)
-  @time ra_adw = interp(X, Y, target; method="adw", radius, cdd=25, nmax, do_angle=true, m=6)
-  @time ra_tps1 = interp_tps(X, Y, target; λ=0.1)
-  @time ra_tps2 = interp_tps(X, Y, target; λ=0.01)
-  @time ra_tps3 = interp_tps(X, Y, target; λ=0.001)
-
-  @test true # no warning is correct
+  for method in (:idw, :adw, :tps)
+    gof = scores[method]
+    @info "5-fold GOF" method gof
+    @testset "$method" begin
+      @test gof.n_valid == length(y)
+      @test gof.NSE > 0.4
+      @test gof.R2 > 0.5
+      @test gof.KGE > 0.6
+      @test gof.RMSE < std(y)
+    end
+  end
 end
-# @profview ra_adw = interp(X, Y, target; wfun=weight_adw!)
-
-if false
-  fig = Figure(; size=(1400, 700))
-  plot_interp(fig[1, 1], ra_tps1, X, Y; title="TPS (λ = 0.1)")
-  plot_interp(fig[1, 2], ra_tps2, X, Y; title="TPS (λ = 0.01)")
-  plot_interp(fig[1, 3], ra_tps3, X, Y; title="TPS (λ = 0.001)")
-  plot_interp(fig[2, 1], ra_idw, X, Y; title="IDW")
-  plot_interp(fig[2, 2], ra_adw, X, Y; title="ADW")
-  fig
-end
-
-# save("FigureS1_Prcp_2km.png", fig)

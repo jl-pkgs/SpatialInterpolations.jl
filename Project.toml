@@ -13,12 +13,14 @@ ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 SpatialRasterLite = "25a4c9b9-c310-4d6e-b9a7-fa79274760a1"
 
 [sources]
+ModelParams = {url = "https://github.com/jl-pkgs/ModelParams.jl"}
 SpatialRasterLite = {url = "https://github.com/jl-pkgs/SpatialRasterLite.jl"}
 
 [compat]
 Distances = "0.10.12"
 DocStringExtensions = "0.9.5"
 LinearAlgebra = "1.11.0"
+ModelParams = "0.2"
 NearestNeighbors = "0.4.22"
 Parameters = "0.12.3"
 ProgressMeter = "1.11.0"
@@ -26,9 +28,11 @@ SpatialRasterLite = "0.1"
 Statistics = "1.11.1"
 
 [extras]
+ModelParams = "213f2e2a-cade-4ae1-a9bc-67b7781bcca8"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 RTableTools = "76227a05-389e-44bd-84ad-996dde4b1834"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "RTableTools", "Statistics"]
+test = ["Test", "ModelParams", "Random", "RTableTools", "Statistics"]

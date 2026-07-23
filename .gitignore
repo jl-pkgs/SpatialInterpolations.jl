@@ -5,4 +5,9 @@ Manifest.toml
 *.jpg
 
 *debug*
-Project_十堰
+# Project_十堰
+
+*.tif
+*.jld2
+*.csv
+*.xlsx
