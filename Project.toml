@@ -14,7 +14,6 @@ SpatialRasterLite = "25a4c9b9-c310-4d6e-b9a7-fa79274760a1"
 
 [sources]
 ModelParams = {url = "https://github.com/jl-pkgs/ModelParams.jl"}
-SpatialRasterLite = {rev = "master", url = "https://github.com/jl-pkgs/SpatialRasterLite.jl"}
 
 [compat]
 Distances = "0.10.12"
