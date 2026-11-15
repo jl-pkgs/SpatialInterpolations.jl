@@ -1,5 +1,5 @@
 # `temp_Brazil.csv`: https://github.com/rpkgs/spInterp
-using SpatInterp, Statistics, Test
+using SpatialInterpolations, Statistics, Test
 using RTableTools
 include("../main_vis.jl")
 

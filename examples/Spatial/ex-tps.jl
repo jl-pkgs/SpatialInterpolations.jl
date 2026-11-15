@@ -1,4 +1,4 @@
-using SpatInterp, Statistics, Test
+using SpatialInterpolations, Statistics, Test
 using RTableTools
 using Distances
 using NearestNeighbors

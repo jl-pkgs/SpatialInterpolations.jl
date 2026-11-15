@@ -1,4 +1,4 @@
-using SpatInterp, Test
+using SpatialInterpolations, Test
 
 include("test-bilinear_irregular.jl")
 include("test-interp.jl")

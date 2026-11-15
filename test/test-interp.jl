@@ -1,4 +1,4 @@
-using SpatInterp, Statistics, Test
+using SpatialInterpolations, Statistics, Test
 using RTableTools
 using SpatialRasterLite: st_points, st_extract
 

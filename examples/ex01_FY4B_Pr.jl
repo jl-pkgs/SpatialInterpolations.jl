@@ -1,6 +1,6 @@
 using NetCDFTools: nc_read, st_dims
 using CairoMakie, MakieLayers
-using SpatInterp, JLD2
+using SpatialInterpolations, JLD2
 using SpatialRasterLite: SpatRaster, bbox, make_rast, bbox2dims, rast
 
 ## 

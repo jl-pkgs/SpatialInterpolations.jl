@@ -1,4 +1,4 @@
-using SpatInterp, Test
+using SpatialInterpolations, Test
 using SpatialRasterLite: Point
 
 @testset "angle2quad" begin

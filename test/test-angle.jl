@@ -1,4 +1,4 @@
-using SpatInterp, Test
+using SpatialInterpolations, Test
 
 @testset "azimuth" begin
   @test angle_azimuth_sphere([0, 0], [0, 1]) == 0    # 正北，0

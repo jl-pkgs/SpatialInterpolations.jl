@@ -1,4 +1,4 @@
-module SpatInterp
+module SpatialInterpolations
 
 using Parameters
 using Distances: Haversine
@@ -42,4 +42,4 @@ include("interp_tps.jl")
 # include("solve_quadratic.jl")
 # include("get_fractional.jl")
 
-end # module SpatInterp
+end # module SpatialInterpolations

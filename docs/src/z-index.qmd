@@ -10,7 +10,7 @@ _Docstrings for SpatInerp._
 #| echo: false
 #| output: false
 using DocumenterQuarto
-using SpatInterp
+using SpatialInterpolations
 ```
 
 ```{julia}

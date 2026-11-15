@@ -1,5 +1,5 @@
 using SpatialRasterLite, ArchGDAL, NetCDFTools
-using SpatInterp
+using SpatialInterpolations
 using Ipaper, DataFrames, RTableTools, JLD2, NaNStatistics
 using Distances: Haversine, pairwise
 using MixedGWR: BISQUARE
@@ -45,13 +45,13 @@ function spatial_weights(X_train, X_pred;
   exclude_diagonal=false)
 
   ntrain, npred = size(X_train, 1), size(X_pred, 1)
-  tree = SpatInterp.BallTree(collect(X_train'), Haversine(6371.0))
+  tree = SpatialInterpolations.BallTree(collect(X_train'), Haversine(6371.0))
   W = zeros(Float64, npred, ntrain)
   nquery = min(nmax + Int(exclude_diagonal), ntrain)
 
   for i in axes(X_pred, 1)
     point = collect(@view X_pred[i, :])
-    neighbors, distance = SpatInterp.knn(tree, point, nquery)
+    neighbors, distance = SpatialInterpolations.knn(tree, point, nquery)
     order = sortperm(distance)
     neighbors, distance = neighbors[order], distance[order]
 

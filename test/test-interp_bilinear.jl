@@ -1,5 +1,5 @@
 using SpatialRasterLite: st_coords, st_bbox, rast
-using SpatInterp, Test
+using SpatialInterpolations, Test
 
 
 @testset "bilinear" begin

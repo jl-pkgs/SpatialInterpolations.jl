@@ -1,4 +1,4 @@
-using SpatInterp, Test
+using SpatialInterpolations, Test
 import SpatialRasterLite
 using SpatialRasterLite: bbox, make_rast, st_dims
 using RTableTools, Statistics

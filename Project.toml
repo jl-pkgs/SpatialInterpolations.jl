@@ -1,4 +1,4 @@
-name = "SpatInterp"
+name = "SpatialInterpolations"
 uuid = "b4b11043-bca8-43d4-9f2c-54842c74f03c"
 version = "0.1.0"
 authors = ["Dongdong Kong <kongdd@users.noreply.github.com>"]

@@ -2,7 +2,7 @@ using ModelParams: GOF
 using Random: MersenneTwister, randperm
 using RTableTools
 using SpatialRasterLite: st_extract
-using SpatInterp, Statistics, Test
+using SpatialInterpolations, Statistics, Test
 
 function interp_kfold(X, y, target; k=5, seed=42)
   n = length(y)
